@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Users List</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+</head>
+
+<body>
+	<div class="container">
+
+		<button id="button-UsersList" class="btn btn-primary m-4">Get Users List</button>
+
+		<button id="addUser" class="btn btn-success m-4">+ Add User</button>
+
+		<h1>Users List</h1>
+		<hr>
+
+		<div class="" id="users-table" style="display: none">
+			<table class="table table-hover">
+				<thead>
+					<tr style="cursor: pointer">
+						<th scope="col" data-column="id" data-order="desc">Id</th>
+						<th scope="col" data-column="full-name" data-order="desc">Full Name</th>
+						<th scope="col" data-column="email" data-order="desc">Email</th>
+						<th scope="col" data-column="address" data-order="desc">City, street, suite</th>
+						<th scope="col" data-column="company-name" data-order="desc">Company Name</th>
+						<th scope="col" data-column="zipcode" data-order="desc">Zipcode</th>
+						<th id="action-buttons" style="display: none">Action Buttons</th>
+					</tr>
+				</thead>
+				<tbody id="tbody"></tbody>
+			</table>
+		</div>
+
+
+		<!-- Modal info -->
+
+		<div id="myModal" class="modal" tabindex="-1">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">User Info</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal add user -->
+
+		<div class="modal addUserModal" tabindex="-1">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Modal title</h5>
+						<button type="button" class="btn-close addUserClose" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="input-group flex-nowrap">
+							<input type="text" class="form-control" placeholder="ID" aria-label="Username"
+								aria-describedby="addon-wrapping">
+						</div>
+						<div class="input-group flex-nowrap">
+							<input type="text" class="form-control" placeholder="Full Name" aria-label="Username"
+								aria-describedby="addon-wrapping">
+						</div>
+						<div class="input-group flex-nowrap">
+							<input type="text" class="form-control" placeholder="Email" aria-label="Username"
+								aria-describedby="addon-wrapping">
+						</div>
+						<div class="input-group flex-nowrap">
+							<input type="text" class="form-control" placeholder="City" aria-label="Username"
+								aria-describedby="addon-wrapping">
+						</div>
+						<div class="input-group flex-nowrap">
+							<input type="text" class="form-control" placeholder="Street" aria-label="Username"
+								aria-describedby="addon-wrapping">
+						</div>
+						<div class="input-group flex-nowrap">
+							<input type="text" class="form-control" placeholder="Suite" aria-label="Username"
+								aria-describedby="addon-wrapping">
+						</div>
+						<div class="input-group flex-nowrap">
+							<input type="text" class="form-control" placeholder="Company Name" aria-label="Username"
+								aria-describedby="addon-wrapping">
+						</div>
+						<div class="input-group flex-nowrap">
+							<input type="text" class="form-control" placeholder="Zipcode" aria-label="Username"
+								aria-describedby="addon-wrapping">
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary saveChanges">Save
+								changes</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	</div>
+
+	</div>
+</body>
+
+<script src="main.js"></script>
+
+</html>
