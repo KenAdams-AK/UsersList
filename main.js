@@ -1,6 +1,5 @@
 const apiLink = 'https://jsonplaceholder.typicode.com/users'
 
-const getUserListBtn = document.querySelector('#btn-UsersList')
 const addUserBtn = document.getElementById('btn-addUser')
 
 const usersTable = document.querySelector('.table')
@@ -24,13 +23,20 @@ fetchedData.then(usersData => console.log(usersData))
 
 // ! Render Fetched Data in Table
 
-getUserListBtn.addEventListener('click', renderUsersTable)
+let globalUsersData;
+initTable();
 
-function renderUsersTable() {
+function initTable() {
 	fetchedData.then(usersData => {
-		let output = ''
-		usersData.forEach(userData => {
-			output += `
+		globalUsersData = usersData;
+		renderTable(usersData);
+	})
+}
+
+function renderTable(usersData) {
+	let output = ''
+	usersData.forEach(userData => {
+		output += `
 				<tr>
 					<th id="full-info" scope="row">${userData.id}</th>
 					<td id="full-info">${userData.name}</td>
@@ -42,10 +48,8 @@ function renderUsersTable() {
 					<td id="full-info">${userData.address.zipcode}</td>
 				</tr>
 			`
-			console.log(userData)
-		})
-		usersTableBody.innerHTML = output
 	})
+	usersTableBody.innerHTML = output
 	usersTable.removeAttribute('style')
 }
 
@@ -60,7 +64,7 @@ function showAddUserModal() {
 }
 
 function closeAddUserModal() {
-	addUserModal.style.display = ''
+	addUserModal.style.display = 'none'
 	clearAddUserModal()
 }
 
@@ -69,18 +73,34 @@ function clearAddUserModal() {
 }
 
 function saveNewUser() {
-	let output = `
-			<tr>
-				<th id="full-info" scope="row">${document.querySelector('input[placeholder = "ID"]').value}</th>
-				<td id="full-info">${document.querySelector('input[placeholder = "Full Name"]').value}</td>
-				<td id="full-info">${document.querySelector('input[placeholder = "Email"]').value}</td>
-				<td id="full-info">${document.querySelector('input[placeholder = "City"]').value},
-									${document.querySelector('input[placeholder = "Street"]').value},
-									${document.querySelector('input[placeholder = "Suite"]').value}</td>
-				<td id="full-info">${document.querySelector('input[placeholder = "Company Name"]').value}</td>
-				<td id="full-info">${document.querySelector('input[placeholder = "Zipcode"]').value}</td>
-			</tr>
-`
-	usersTable.innerHTML += output
+	const id = globalUsersData[globalUsersData.length - 1].id + 1;
+	const fullName = document.querySelector('input[placeholder = "Full Name"]').value
+	const email = document.querySelector('input[placeholder = "Email"]').value
+	const city = document.querySelector('input[placeholder = "City"]').value
+	const street = document.querySelector('input[placeholder = "Street"]').value
+	const suite = document.querySelector('input[placeholder = "Suite"]').value
+	const companyName = document.querySelector('input[placeholder = "Company Name"]').value
+	const zipCode = document.querySelector('input[placeholder = "Zipcode"]').value
+
+	const newUser = {
+		id: id,
+		name: fullName,
+		email: email,
+		address: {
+			city: city,
+			street: street,
+			suite: suite,
+			zipcode: zipCode,
+		},
+		company: {
+			name: companyName,
+		},
+	}
+
+	globalUsersData.push(newUser)
+	renderTable(globalUsersData)
 	closeAddUserModal()
 }
+
+// ! Table Sorting
+
