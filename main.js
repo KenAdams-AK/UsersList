@@ -104,3 +104,27 @@ function saveNewUser() {
 
 // ! Table Sorting
 
+const tableThs = document.querySelectorAll('th[scope="col"]');
+sortTable();
+
+function sortTable() {
+	for (const tableTh of tableThs) {
+		tableTh.addEventListener('click', sortColumn);
+
+		function sortColumn() {
+			const column = this.dataset.column;
+			const order = this.dataset.order;
+
+			if (order == 'desc') {
+				this.setAttribute('data-order', 'asc');
+				globalUsersData = globalUsersData.sort((a, b) => a[column] > b[column] ? 1 : -1);
+			} else {
+				this.setAttribute('data-order', 'desc');
+				globalUsersData = globalUsersData.sort((a, b) => a[column] < b[column] ? 1 : -1);
+			};
+
+			initTable();
+			console.log('column clicked:', column, order);
+		}
+	}
+}
