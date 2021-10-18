@@ -22,11 +22,15 @@
 			<thead>
 				<tr style="cursor: pointer">
 					<th scope="col" data-column="id" data-order="asc">Id</th>
-					<th scope="col" data-column="full-name" data-order="desc">Full Name</th>
+					<th scope="col" data-column="name" data-order="desc">Full Name</th>
 					<th scope="col" data-column="email" data-order="desc">Email</th>
-					<th scope="col" data-column="address" data-order="desc">City, street, suite</th>
-					<th scope="col" data-column="company-name" data-order="desc">Company Name</th>
-					<th scope="col" data-column="zipcode" data-order="desc">Zipcode</th>
+					<th scope="col" data-column="address" data-nested="city" data-order="desc">City,
+						street,
+						suite</th>
+					<th scope="col" data-column="company" data-nested="name" data-order="desc">Company Name
+					</th>
+					<th scope="col" data-column="address" data-nested="zipcode" data-order="desc">
+						Zipcode</th>
 					<th id="action-buttons" style="display: none">Action Buttons</th>
 				</tr>
 			</thead>

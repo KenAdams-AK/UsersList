@@ -112,15 +112,18 @@ function sortTable() {
 		tableTh.addEventListener('click', sortColumn);
 
 		function sortColumn() {
-			const column = this.dataset.column;
 			const order = this.dataset.order;
+			const column = this.dataset.column;
+			const nested = this.dataset.nested;
 
 			if (order == 'desc') {
 				this.setAttribute('data-order', 'asc');
 				globalUsersData = globalUsersData.sort((a, b) => a[column] > b[column] ? 1 : -1);
+				globalUsersData = globalUsersData.sort((a, b) => a[column][nested] > b[column][nested] ? 1 : -1);
 			} else {
 				this.setAttribute('data-order', 'desc');
 				globalUsersData = globalUsersData.sort((a, b) => a[column] < b[column] ? 1 : -1);
+				globalUsersData = globalUsersData.sort((a, b) => a[column][nested] < b[column][nested] ? 1 : -1);
 			};
 
 			initTable();
