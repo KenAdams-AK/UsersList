@@ -8,7 +8,8 @@ const usersTableBody = document.getElementById('tableBody')
 const addUserModal = document.querySelector('.addUserModal')
 const addUserModal_CloseBtn = document.querySelector('.addUserClose')
 const addUserModal_SaveBtn = document.querySelector('.saveNewUser')
-const addUserModal_Inputs = document.querySelectorAll('input')
+
+const inputs = document.querySelectorAll('input')
 
 const fetchedData = getDataFromApi()
 
@@ -46,6 +47,16 @@ function renderTable(usersData) {
 										${userData.address.suite}</td>
 					<td id="full-info">${userData.company.name}</td>
 					<td id="full-info">${userData.address.zipcode}</td>
+						<th scope="row">
+							<div class="defaultBtns d-flex">
+								<button class="editUserDataBtn btn-primary rounded-3 m-1" style="cursor: pointer">Edit</button>
+								<button onclick="removeUser(${userData.id})" class="removeUserBtn btn-danger rounded-3 m-1" style="cursor: pointer">Remove</button>
+							</div>
+							<div class="editDataBtns d-flex d-none">
+								<button class="saveUserDataBtn btn-success rounded-3 m-1" style="cursor: pointer">Save</button>
+								<button class="cancelEditingBtn btn-secondary rounded-3 m-1" style="cursor: pointer">Cancel</button>
+							</div>
+						</th>
 				</tr>
 			`
 	})
@@ -68,8 +79,8 @@ function closeAddUserModal() {
 	clearAddUserModal()
 }
 
-function clearAddUserModal() {
-	addUserModal_Inputs.forEach(input => input.value = '')
+function clearInputs() {
+	inputs.forEach(input => input.value = '')
 }
 
 function saveNewUser() {
@@ -130,4 +141,13 @@ function sortTable() {
 			console.log('column clicked:', column, order);
 		}
 	}
+}
+
+// ! Add Column with Action Buttons
+
+function removeUser(userToRemoveId) {
+	globalUsersData = globalUsersData.filter(userData => userData.id != userToRemoveId);
+	renderTable(globalUsersData);
+
+	console.log(globalUsersData, 'userToRemoveId: ' + userToRemoveId);
 }
