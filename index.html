@@ -18,12 +18,12 @@
 		<h1>Users List</h1>
 		<hr>
 
-		<table class="table table-hover" style="display: none">
+		<table class="table table-hover">
 			<thead>
 				<tr style="cursor: pointer">
-					<th scope="col" data-column="id" data-order="asc">Id</th>
-					<th scope="col" data-column="name" data-order="desc">Full Name</th>
-					<th scope="col" data-column="email" data-order="desc">Email</th>
+					<th scope="col" data-column="id" data-order="desc">Id</th>
+					<th scope="col" data-column="name" data-order="asc">Full Name</th>
+					<th scope="col" data-column="email" data-order="asc">Email</th>
 					<th scope="col" data-column="address" data-nested="city" data-order="desc">City,
 						street,
 						suite</th>
@@ -65,10 +65,6 @@
 						aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<div class="input-group flex-nowrap mb-2">
-						<input type="text" class="form-control" placeholder="ID" aria-label="Username"
-							aria-describedby="addon-wrapping">
-					</div>
 					<div class="input-group flex-nowrap mb-2">
 						<input type="text" class="form-control" placeholder="Full Name" aria-label="Username"
 							aria-describedby="addon-wrapping">

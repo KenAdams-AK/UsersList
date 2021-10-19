@@ -2,7 +2,6 @@ const apiLink = 'https://jsonplaceholder.typicode.com/users'
 
 const addUserBtn = document.getElementById('btn-addUser')
 
-const usersTable = document.querySelector('.table')
 const usersTableBody = document.getElementById('tableBody')
 
 const addUserModal = document.querySelector('.addUserModal')
@@ -29,39 +28,67 @@ initTable();
 
 function initTable() {
 	fetchedData.then(usersData => {
+
+		usersData.forEach(userData => {
+			userData.isAditable = false;
+		});
+
 		globalUsersData = usersData;
 		renderTable(usersData);
 	})
 }
 
 function renderTable(usersData) {
-	let output = ''
-	usersData.forEach(userData => {
-		output += `
-				<tr>
-					<th id="full-info" scope="row">${userData.id}</th>
-					<td id="full-info">${userData.name}</td>
-					<td id="full-info">${userData.email}</td>
-					<td id="full-info">${userData.address.city},
-										${userData.address.street},
-										${userData.address.suite}</td>
-					<td id="full-info">${userData.company.name}</td>
-					<td id="full-info">${userData.address.zipcode}</td>
-						<th scope="row">
-							<div class="defaultBtns d-flex">
-								<button class="editUserDataBtn btn-primary rounded-3 m-1" style="cursor: pointer">Edit</button>
-								<button onclick="removeUser(${userData.id})" class="removeUserBtn btn-danger rounded-3 m-1" style="cursor: pointer">Remove</button>
-							</div>
-							<div class="editDataBtns d-flex d-none">
-								<button class="saveUserDataBtn btn-success rounded-3 m-1" style="cursor: pointer">Save</button>
-								<button class="cancelEditingBtn btn-secondary rounded-3 m-1" style="cursor: pointer">Cancel</button>
-							</div>
-						</th>
-				</tr>
+
+	let tableRow = '';
+
+	globalUsersData.forEach(userData => {
+		if (userData.isAditable === true) {
+			tableRow += `
+			<tr>
+				<th id="full-info" scope="row">${userData.id}</th>
+				<td id="full-info"> <input type="text" value="${userData.name}"></td>
+				<td id="full-info"> <input type="text" value="${userData.email}"></td>
+				<td id="full-info"> <input type="text" value="${userData.address.city}">
+									<input type="text" value="${userData.address.street}" class="my-1">
+									<input type="text" value="${userData.address.suite}">
+				</td>
+				<td id="full-info"> <input type="text" value="${userData.company.name}"></td>
+				<td id="full-info"> <input type="text" value="${userData.address.zipcode}"></td>
+				<th scope="row">
+					<div class="editDataBtns d-flex">
+						<button class="saveUserDataBtn btn-success rounded-3 m-1" style="cursor: pointer">Save</button>
+						<button class="cancelEditingBtn btn-secondary rounded-3 m-1" style="cursor: pointer">Cancel</button>
+					</div>
+				</th>
+			</tr>
 			`
-	})
-	usersTableBody.innerHTML = output
-	usersTable.removeAttribute('style')
+		} else {
+			tableRow += `
+			<tr>
+				<th id="full-info" scope="row">${userData.id}</th>
+				<td id="full-info">${userData.name}</td>
+				<td id="full-info">${userData.email}</td>
+				<td id="full-info">${userData.address.city},
+					${userData.address.street},
+					${userData.address.suite}</td>
+				<td id="full-info">${userData.company.name}</td>
+				<td id="full-info">${userData.address.zipcode}</td>
+				<th scope="row">
+					<div class="defaultBtns d-flex">
+						<button onclick="editUserData(${userData.id})" class="btn-primary rounded-3 m-1" style="cursor: pointer">Edit</button>
+						<button onclick="removeUser(${userData.id})" class="btn-danger rounded-3 m-1" style="cursor: pointer">Remove</button>
+					</div>
+					<div class="editDataBtns d-flex d-none">
+						<button class="saveUserDataBtn btn-success rounded-3 m-1" style="cursor: pointer">Save</button>
+						<button class="cancelEditingBtn btn-secondary rounded-3 m-1" style="cursor: pointer">Cancel</button>
+					</div>
+				</th>
+			</tr>
+			`
+		}
+	});
+	usersTableBody.innerHTML = tableRow;
 }
 
 // ! Add User to the Table
@@ -76,7 +103,7 @@ function showAddUserModal() {
 
 function closeAddUserModal() {
 	addUserModal.style.display = 'none'
-	clearAddUserModal()
+	clearInputs()
 }
 
 function clearInputs() {
@@ -137,8 +164,9 @@ function sortTable() {
 				globalUsersData = globalUsersData.sort((a, b) => a[column][nested] < b[column][nested] ? 1 : -1);
 			};
 
-			initTable();
+			renderTable(globalUsersData);
 			console.log('column clicked:', column, order);
+			console.log(globalUsersData);
 		}
 	}
 }
@@ -149,5 +177,13 @@ function removeUser(userToRemoveId) {
 	globalUsersData = globalUsersData.filter(userData => userData.id != userToRemoveId);
 	renderTable(globalUsersData);
 
-	console.log(globalUsersData, 'userToRemoveId: ' + userToRemoveId);
+	console.log('userToRemoveId ' + userToRemoveId + ' : has been removed');
+	console.log(globalUsersData);
+}
+
+function editUserData(userToEditId) {
+	globalUsersData.find(userData => userData.id === userToEditId).isAditable = true;
+	renderTable(globalUsersData);
+
+	console.log('userToEditId ' + userToEditId + ': was clicked');
 }
