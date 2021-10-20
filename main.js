@@ -122,14 +122,23 @@ function saveNewUser() {
 		id: id,
 		name: fullName,
 		email: email,
+		phone: '',
+		website: '',
+		username: '',
 		address: {
 			city: city,
 			street: street,
 			suite: suite,
 			zipcode: zipCode,
+			geo: {
+				lat: '',
+				lng: '',
+			},
 		},
 		company: {
 			name: companyName,
+			catchPhrase: '',
+			bs: '',
 		},
 		isAditable: false,
 	}
@@ -196,14 +205,23 @@ function saveEditedData(editedUserDataId) {
 		id: editedUserDataId,
 		name: document.querySelector(`#userName-${editedUserDataId}`).value,
 		email: document.querySelector(`#email-${editedUserDataId}`).value,
+		username: '',
+		phone: '',
+		website: '',
 		address: {
 			city: document.querySelector(`#city-${editedUserDataId}`).value,
 			street: document.querySelector(`#street-${editedUserDataId}`).value,
 			suite: document.querySelector(`#suite-${editedUserDataId}`).value,
 			zipcode: document.querySelector(`#zipcode-${editedUserDataId}`).value,
+			geo: {
+				lat: '',
+				lng: '',
+			},
 		},
 		company: {
 			name: document.querySelector(`#companyName-${editedUserDataId}`).value,
+			catchPhrase: '',
+			bs: '',
 		},
 		isAditable: false,
 	}
