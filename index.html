@@ -22,8 +22,8 @@
 			<thead>
 				<tr style="cursor: pointer">
 					<th scope="col" data-column="id" data-order="desc">Id</th>
-					<th scope="col" data-column="name" data-order="asc">Full Name</th>
-					<th scope="col" data-column="email" data-order="asc">Email</th>
+					<th scope="col" data-column="name" data-order="desc">Full Name</th>
+					<th scope="col" data-column="email" data-order="desc">Email</th>
 					<th scope="col" data-column="address" data-nested="city" data-order="desc">City,
 						street,
 						suite</th>
@@ -56,42 +56,34 @@
 
 	<!-- Modal add user -->
 
-	<div class="modal addUserModal" tabindex="-1">
+	<div class="modal addUserModal">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title">Please, enter your information</h5>
-					<button type="button" class="btn-close addUserClose" data-bs-dismiss="modal"
-						aria-label="Close"></button>
+					<button type="button" class="btn-close addUserClose"></button>
 				</div>
 				<div class="modal-body">
 					<div class="input-group flex-nowrap mb-2">
-						<input type="text" class="form-control" placeholder="Full Name" aria-label="Username"
-							aria-describedby="addon-wrapping">
+						<input type="text" class="form-control" placeholder="Full Name">
 					</div>
 					<div class="input-group flex-nowrap mb-2">
-						<input type="text" class="form-control" placeholder="Email" aria-label="Username"
-							aria-describedby="addon-wrapping">
+						<input type="text" class="form-control" placeholder="Email">
 					</div>
 					<div class="input-group flex-nowrap mb-2">
-						<input type="text" class="form-control" placeholder="City" aria-label="Username"
-							aria-describedby="addon-wrapping">
+						<input type="text" class="form-control" placeholder="City">
 					</div>
 					<div class="input-group flex-nowrap mb-2">
-						<input type="text" class="form-control" placeholder="Street" aria-label="Username"
-							aria-describedby="addon-wrapping">
+						<input type="text" class="form-control" placeholder="Street">
 					</div>
 					<div class="input-group flex-nowrap mb-2">
-						<input type="text" class="form-control" placeholder="Suite" aria-label="Username"
-							aria-describedby="addon-wrapping">
+						<input type="text" class="form-control" placeholder="Suite">
 					</div>
 					<div class="input-group flex-nowrap mb-2">
-						<input type="text" class="form-control" placeholder="Company Name" aria-label="Username"
-							aria-describedby="addon-wrapping">
+						<input type="text" class="form-control" placeholder="Company Name">
 					</div>
 					<div class="input-group flex-nowrap mb-3">
-						<input type="text" class="form-control" placeholder="Zipcode" aria-label="Username"
-							aria-describedby="addon-wrapping">
+						<input type="text" class="form-control" placeholder="Zipcode">
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary saveNewUser">Save</button>
@@ -100,10 +92,40 @@
 			</div>
 		</div>
 	</div>
-	</div>
 
-	</div>
+	<!-- Modal show full user's data -->
 
+	<div class="modal showFullUserData">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header flex-column">
+					<h5 class="modal-title userName"></h5>
+					<h4 class="modal-title name"></h4>
+				</div>
+				<div class="modal-body">
+					<p class="id"></p>
+					<p class="phone"></p>
+					<p class="website"></p>
+					<hr>
+					<p class="adress"><b>Address:</b></p>
+					<p class="city ms-2"></p>
+					<p class="geo-lat ms-4"></p>
+					<p class="geo-lng ms-4"></p>
+					<p class="street ms-2"></p>
+					<p class="suite ms-2"></p>
+					<p class="zipcode ms-2"></p>
+					<hr>
+					<p class="company"><b>Company:</b></p>
+					<p class="companyName ms-2"></p>
+					<p class="catchPhrase ms-2"></p>
+					<p class="bs ms-2"></p>
+				</div>
+				<div class="modal-footer">
+					<button onclick="closeFullDataModal()" type="button" class="fullInfoClose btn btn-secondary"
+						data-bs-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
 	</div>
 </body>
 

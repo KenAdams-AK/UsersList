@@ -53,8 +53,8 @@ function renderTable(usersData) {
 					<input id="street-${userData.id}" type="text" value="${userData.address.street}" class="my-1">
 					<input id="suite-${userData.id}" type="text" value="${userData.address.suite}">
 				</td>
-				<td id=""> <input id="companyName-${userData.id}" type="text" value="${userData.company.name}"></td>
-				<td id=""> <input id="zipcode-${userData.id}" type="text" value="${userData.address.zipcode}"></td>
+				<td> <input id="companyName-${userData.id}" type="text" value="${userData.company.name}"></td>
+				<td> <input id="zipcode-${userData.id}" type="text" value="${userData.address.zipcode}"></td>
 				<th scope="row">
 					<div class="editDataBtns d-flex">
 						<button onclick="saveEditedData(${userData.id})" class="btn-success rounded-3 m-1" style="cursor: pointer">Save</button>
@@ -66,14 +66,14 @@ function renderTable(usersData) {
 		} else {
 			tableRow += `
 			<tr>
-				<th id="id-${userData.id}" scope="row">${userData.id}</th>
-				<td id="userName-${userData.id}">${userData.name}</td>
-				<td id="email-${userData.id}">${userData.email}</td>
-				<td id="adress-${userData.id}">${userData.address.city},
+				<th onclick="showFullDataModal(${userData.id})" id="id-${userData.id}" scope="row">${userData.id}</th>
+				<td onclick="showFullDataModal(${userData.id})" id="userName-${userData.id}">${userData.name}</td>
+				<td onclick="showFullDataModal(${userData.id})" id="email-${userData.id}">${userData.email}</td>
+				<td onclick="showFullDataModal(${userData.id})" id="adress-${userData.id}">${userData.address.city},
 							${userData.address.street},
 							${userData.address.suite}</td>
-				<td id="companyName-${userData.id}">${userData.company.name}</td>
-				<td id="zipcode-${userData.id}">${userData.address.zipcode}</td>
+				<td onclick="showFullDataModal(${userData.id})" id="companyName-${userData.id}">${userData.company.name}</td>
+				<td onclick="showFullDataModal(${userData.id})" id="zipcode-${userData.id}">${userData.address.zipcode}</td>
 				<th scope="row">
 					<div class="defaultBtns d-flex">
 						<button onclick="editUserData(${userData.id})" class="btn-primary rounded-3 m-1" style="cursor: pointer">Edit</button>
@@ -109,7 +109,7 @@ function clearInputs() {
 }
 
 function saveNewUser() {
-	const id = globalUsersData[globalUsersData.length - 1].id + 1;
+	const id = globalUsersData.length + 1;
 	const fullName = document.querySelector('input[placeholder = "Full Name"]').value
 	const email = document.querySelector('input[placeholder = "Email"]').value
 	const city = document.querySelector('input[placeholder = "City"]').value
@@ -145,7 +145,7 @@ function saveNewUser() {
 // ! Table Sorting
 
 const tableThs = document.querySelectorAll('th[scope="col"]');
-sortTable();
+sortTable(globalUsersData);
 
 function sortTable() {
 	for (const tableTh of tableThs) {
@@ -222,4 +222,34 @@ function cancelEditing(userToEditId) {
 	renderTable(globalUsersData);
 
 	console.log('userToEditId ' + userToEditId + ': editing was canceled');
+}
+
+// ! Click on the row of the table
+
+function showFullDataModal(selectedUserId) {
+	document.querySelector('.showFullUserData').style.display = 'block';
+
+	let selectedUserIndex = globalUsersData.findIndex(userData => userData.id == selectedUserId);
+
+	document.querySelector('.userName').innerHTML = globalUsersData[selectedUserIndex].username;
+	document.querySelector('.name').innerHTML = globalUsersData[selectedUserIndex].name;
+	document.querySelector('.id').innerHTML = '<b>Id: </b>' + globalUsersData[selectedUserIndex].id;
+	document.querySelector('.phone').innerHTML = '<b>Phone: </b>' + globalUsersData[selectedUserIndex].phone;
+	document.querySelector('.website').innerHTML = '<b>Website: </b>' + globalUsersData[selectedUserIndex].website;
+	document.querySelector('.city').innerHTML = '<b>City: </b>' + globalUsersData[selectedUserIndex].address.city;
+	document.querySelector('.geo-lat').innerHTML = '<b>lat: </b>' + globalUsersData[selectedUserIndex].address.geo.lat;
+	document.querySelector('.geo-lng').innerHTML = '<b>lng: </b>' + globalUsersData[selectedUserIndex].address.geo.lng;
+	document.querySelector('.street').innerHTML = '<b>Street: </b>' + globalUsersData[selectedUserIndex].address.street;
+	document.querySelector('.suite').innerHTML = '<b>Suite: </b>' + globalUsersData[selectedUserIndex].address.suite;
+	document.querySelector('.zipcode').innerHTML = '<b>Zipcode: </b>' + globalUsersData[selectedUserIndex].address.zipcode;
+	document.querySelector('.companyName').innerHTML = '<b>name: </b>' + globalUsersData[selectedUserIndex].company.name;
+	document.querySelector('.catchPhrase').innerHTML = '<b>catch phrase: </b>' + globalUsersData[selectedUserIndex].company.catchPhrase;
+	document.querySelector('.bs').innerHTML = '<b>bs: </b>' + globalUsersData[selectedUserIndex].company.bs;
+
+	console.log('fullDataModal index: ' + selectedUserIndex + ' has been shown');
+}
+
+function closeFullDataModal() {
+	document.querySelector('.showFullUserData').style.display = 'none';
+	console.log('fullDataModal was closed');
 }
