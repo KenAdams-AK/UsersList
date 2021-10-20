@@ -46,19 +46,19 @@ function renderTable(usersData) {
 		if (userData.isAditable === true) {
 			tableRow += `
 			<tr>
-				<th id="full-info" scope="row">${userData.id}</th>
-				<td id="full-info"> <input type="text" value="${userData.name}"></td>
-				<td id="full-info"> <input type="text" value="${userData.email}"></td>
-				<td id="full-info"> <input type="text" value="${userData.address.city}">
-									<input type="text" value="${userData.address.street}" class="my-1">
-									<input type="text" value="${userData.address.suite}">
+				<th id="id-${userData.id}" scope="row">${userData.id}</th>
+				<td> <input id="userName-${userData.id}" type="text" value="${userData.name}"></td>
+				<td> <input id="email-${userData.id}" type="text" value="${userData.email}"></td>
+				<td> <input id="city-${userData.id}" type="text" value="${userData.address.city}">
+					<input id="street-${userData.id}" type="text" value="${userData.address.street}" class="my-1">
+					<input id="suite-${userData.id}" type="text" value="${userData.address.suite}">
 				</td>
-				<td id="full-info"> <input type="text" value="${userData.company.name}"></td>
-				<td id="full-info"> <input type="text" value="${userData.address.zipcode}"></td>
+				<td id=""> <input id="companyName-${userData.id}" type="text" value="${userData.company.name}"></td>
+				<td id=""> <input id="zipcode-${userData.id}" type="text" value="${userData.address.zipcode}"></td>
 				<th scope="row">
 					<div class="editDataBtns d-flex">
-						<button class="saveUserDataBtn btn-success rounded-3 m-1" style="cursor: pointer">Save</button>
-						<button class="cancelEditingBtn btn-secondary rounded-3 m-1" style="cursor: pointer">Cancel</button>
+						<button onclick="saveEditedData(${userData.id})" class="btn-success rounded-3 m-1" style="cursor: pointer">Save</button>
+						<button onclick="cancelEditing(${userData.id})" class="btn-secondary rounded-3 m-1" style="cursor: pointer">Cancel</button>
 					</div>
 				</th>
 			</tr>
@@ -66,22 +66,18 @@ function renderTable(usersData) {
 		} else {
 			tableRow += `
 			<tr>
-				<th id="full-info" scope="row">${userData.id}</th>
-				<td id="full-info">${userData.name}</td>
-				<td id="full-info">${userData.email}</td>
-				<td id="full-info">${userData.address.city},
-					${userData.address.street},
-					${userData.address.suite}</td>
-				<td id="full-info">${userData.company.name}</td>
-				<td id="full-info">${userData.address.zipcode}</td>
+				<th id="id-${userData.id}" scope="row">${userData.id}</th>
+				<td id="userName-${userData.id}">${userData.name}</td>
+				<td id="email-${userData.id}">${userData.email}</td>
+				<td id="adress-${userData.id}">${userData.address.city},
+							${userData.address.street},
+							${userData.address.suite}</td>
+				<td id="companyName-${userData.id}">${userData.company.name}</td>
+				<td id="zipcode-${userData.id}">${userData.address.zipcode}</td>
 				<th scope="row">
 					<div class="defaultBtns d-flex">
 						<button onclick="editUserData(${userData.id})" class="btn-primary rounded-3 m-1" style="cursor: pointer">Edit</button>
 						<button onclick="removeUser(${userData.id})" class="btn-danger rounded-3 m-1" style="cursor: pointer">Remove</button>
-					</div>
-					<div class="editDataBtns d-flex d-none">
-						<button class="saveUserDataBtn btn-success rounded-3 m-1" style="cursor: pointer">Save</button>
-						<button class="cancelEditingBtn btn-secondary rounded-3 m-1" style="cursor: pointer">Cancel</button>
 					</div>
 				</th>
 			</tr>
@@ -104,6 +100,8 @@ function showAddUserModal() {
 function closeAddUserModal() {
 	addUserModal.style.display = 'none'
 	clearInputs()
+
+	console.log('adding new user was canceled');
 }
 
 function clearInputs() {
@@ -133,11 +131,15 @@ function saveNewUser() {
 		company: {
 			name: companyName,
 		},
+		isAditable: false,
 	}
 
 	globalUsersData.push(newUser)
 	renderTable(globalUsersData)
 	closeAddUserModal()
+
+	console.log('new user has been added');
+	console.log(globalUsersData);
 }
 
 // ! Table Sorting
@@ -165,7 +167,8 @@ function sortTable() {
 			};
 
 			renderTable(globalUsersData);
-			console.log('column clicked:', column, order);
+
+			console.log('column: ' + column + ' has been sorted: ' + order);
 			console.log(globalUsersData);
 		}
 	}
@@ -177,7 +180,7 @@ function removeUser(userToRemoveId) {
 	globalUsersData = globalUsersData.filter(userData => userData.id != userToRemoveId);
 	renderTable(globalUsersData);
 
-	console.log('userToRemoveId ' + userToRemoveId + ' : has been removed');
+	console.log('userToRemoveId ' + userToRemoveId + ': has been removed');
 	console.log(globalUsersData);
 }
 
@@ -185,5 +188,38 @@ function editUserData(userToEditId) {
 	globalUsersData.find(userData => userData.id === userToEditId).isAditable = true;
 	renderTable(globalUsersData);
 
-	console.log('userToEditId ' + userToEditId + ': was clicked');
+	console.log('userToEditId ' + userToEditId + ': selected to edit');
+}
+
+function saveEditedData(editedUserDataId) {
+	const editedUser = {
+		id: editedUserDataId,
+		name: document.querySelector(`#userName-${editedUserDataId}`).value,
+		email: document.querySelector(`#email-${editedUserDataId}`).value,
+		address: {
+			city: document.querySelector(`#city-${editedUserDataId}`).value,
+			street: document.querySelector(`#street-${editedUserDataId}`).value,
+			suite: document.querySelector(`#suite-${editedUserDataId}`).value,
+			zipcode: document.querySelector(`#zipcode-${editedUserDataId}`).value,
+		},
+		company: {
+			name: document.querySelector(`#companyName-${editedUserDataId}`).value,
+		},
+		isAditable: false,
+	}
+
+	let editedUserIndex = globalUsersData.findIndex(userData => userData.id == editedUserDataId);
+
+	globalUsersData.splice(editedUserIndex, 1, editedUser);
+	cancelEditing(editedUserDataId);
+
+	console.log('editedUserDataId ' + editedUserDataId + ' : was changed');
+	console.log(globalUsersData);
+}
+
+function cancelEditing(userToEditId) {
+	globalUsersData.find(userData => userData.id == userToEditId).isAditable = false;
+	renderTable(globalUsersData);
+
+	console.log('userToEditId ' + userToEditId + ': editing was canceled');
 }

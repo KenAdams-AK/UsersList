@@ -1,1 +1,1 @@
-CodewayTODAY Javascript Final Exercise
+CodewayTODAY. Javascript Final Exercise
