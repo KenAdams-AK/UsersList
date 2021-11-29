@@ -1,48 +1,69 @@
-const apiLink = 'https://jsonplaceholder.typicode.com/users'
+const apiLink = 'https://jsonplaceholder.typicode.com/users';
 
-const addUserBtn = document.getElementById('btn-addUser')
+const addUserBtn = document.getElementById('btn-addUser');
+const clearLocalStorageBtn = document.getElementById('btn-clearLocalStorage');
 
-const usersTableBody = document.getElementById('tableBody')
+const usersTableBody = document.getElementById('tableBody');
 
-const addUserModal = document.querySelector('.addUserModal')
-const addUserModal_CloseBtn = document.querySelector('.addUserClose')
-const addUserModal_SaveBtn = document.querySelector('.saveNewUser')
+const addUserModal = document.querySelector('.addUserModal');
+const addUserModal_CloseBtn = document.querySelector('.addUserClose');
+const addUserModal_SaveBtn = document.querySelector('.saveNewUser');
 
-const inputs = document.querySelectorAll('input')
+const inputs = document.querySelectorAll('input');
 
-const fetchedData = getDataFromApi()
+let globalUsersData = JSON.parse(localStorage.getItem('usersData'))?.data;
+
+console.log(globalUsersData);
 
 // ! Fetch Data by API
 
 function getDataFromApi() {
-	return fetch(apiLink)
-		.then(res => res.json())
+	return fetch(apiLink).then((res) => res.json());
 }
 
-fetchedData.then(usersData => console.log(usersData))
+if (!globalUsersData) {
+	let fetchedData = getDataFromApi();
+
+	fetchedData.then((usersData) => {
+		globalUsersData = usersData;
+		setLocalStorage(usersData);
+		window.location.reload();
+
+		console.log(usersData);
+	});
+}
+
+// ! Local Storage
+
+clearLocalStorageBtn.addEventListener('click', handleClick);
+
+function handleClick() {
+	localStorage.clear();
+	getDataFromApi();
+	window.location.reload();
+	initTable();
+}
+
+function setLocalStorage(data) {
+	localStorage.setItem('usersData', JSON.stringify({ data: data }));
+}
 
 // ! Render Fetched Data in Table
 
-let globalUsersData;
 initTable();
 
 function initTable() {
-	fetchedData.then(usersData => {
+	globalUsersData?.forEach((userData) => {
+		userData.isAditable = false;
+	});
 
-		usersData.forEach(userData => {
-			userData.isAditable = false;
-		});
-
-		globalUsersData = usersData;
-		renderTable(usersData);
-	})
+	renderTable(globalUsersData);
 }
 
-function renderTable(usersData) {
-
+function renderTable() {
 	let tableRow = '';
 
-	globalUsersData.forEach(userData => {
+	globalUsersData?.forEach((userData) => {
 		if (userData.isAditable === true) {
 			tableRow += `
 			<tr>
@@ -62,7 +83,7 @@ function renderTable(usersData) {
 					</div>
 				</th>
 			</tr>
-			`
+			`;
 		} else {
 			tableRow += `
 			<tr>
@@ -81,7 +102,7 @@ function renderTable(usersData) {
 					</div>
 				</th>
 			</tr>
-			`
+			`;
 		}
 	});
 	usersTableBody.innerHTML = tableRow;
@@ -89,34 +110,40 @@ function renderTable(usersData) {
 
 // ! Add User to the Table
 
-addUserBtn.addEventListener('click', showAddUserModal)
-addUserModal_CloseBtn.addEventListener('click', closeAddUserModal)
-addUserModal_SaveBtn.addEventListener('click', saveNewUser)
+addUserBtn.addEventListener('click', showAddUserModal);
+addUserModal_CloseBtn.addEventListener('click', closeAddUserModal);
+addUserModal_SaveBtn.addEventListener('click', saveNewUser);
 
 function showAddUserModal() {
-	addUserModal.style.display = 'block'
+	addUserModal.style.display = 'block';
 }
 
 function closeAddUserModal() {
-	addUserModal.style.display = 'none'
-	clearInputs()
+	addUserModal.style.display = 'none';
+	clearInputs();
 
 	console.log('adding new user was canceled');
 }
 
 function clearInputs() {
-	inputs.forEach(input => input.value = '')
+	inputs.forEach((input) => (input.value = ''));
 }
 
 function saveNewUser() {
 	const id = globalUsersData.length + 1;
-	const fullName = document.querySelector('input[placeholder = "Full Name"]').value
-	const email = document.querySelector('input[placeholder = "Email"]').value
-	const city = document.querySelector('input[placeholder = "City"]').value
-	const street = document.querySelector('input[placeholder = "Street"]').value
-	const suite = document.querySelector('input[placeholder = "Suite"]').value
-	const companyName = document.querySelector('input[placeholder = "Company Name"]').value
-	const zipCode = document.querySelector('input[placeholder = "Zipcode"]').value
+	const fullName = document.querySelector(
+		'input[placeholder = "Full Name"]'
+	).value;
+	const email = document.querySelector('input[placeholder = "Email"]').value;
+	const city = document.querySelector('input[placeholder = "City"]').value;
+	const street = document.querySelector('input[placeholder = "Street"]').value;
+	const suite = document.querySelector('input[placeholder = "Suite"]').value;
+	const companyName = document.querySelector(
+		'input[placeholder = "Company Name"]'
+	).value;
+	const zipCode = document.querySelector(
+		'input[placeholder = "Zipcode"]'
+	).value;
 
 	const newUser = {
 		id: id,
@@ -141,11 +168,14 @@ function saveNewUser() {
 			bs: '',
 		},
 		isAditable: false,
-	}
+	};
 
-	globalUsersData.push(newUser)
-	renderTable(globalUsersData)
-	closeAddUserModal()
+	globalUsersData.push(newUser);
+
+	setLocalStorage(globalUsersData);
+
+	renderTable(globalUsersData);
+	closeAddUserModal();
 
 	console.log('new user has been added');
 	console.log(globalUsersData);
@@ -167,13 +197,23 @@ function sortTable() {
 
 			if (order == 'desc') {
 				this.setAttribute('data-order', 'asc');
-				globalUsersData = globalUsersData.sort((a, b) => a[column] > b[column] ? 1 : -1);
-				globalUsersData = globalUsersData.sort((a, b) => a[column][nested] > b[column][nested] ? 1 : -1);
+				globalUsersData = globalUsersData.sort((a, b) =>
+					a[column] > b[column] ? 1 : -1
+				);
+				globalUsersData = globalUsersData.sort((a, b) =>
+					a[column][nested] > b[column][nested] ? 1 : -1
+				);
 			} else {
 				this.setAttribute('data-order', 'desc');
-				globalUsersData = globalUsersData.sort((a, b) => a[column] < b[column] ? 1 : -1);
-				globalUsersData = globalUsersData.sort((a, b) => a[column][nested] < b[column][nested] ? 1 : -1);
-			};
+				globalUsersData = globalUsersData.sort((a, b) =>
+					a[column] < b[column] ? 1 : -1
+				);
+				globalUsersData = globalUsersData.sort((a, b) =>
+					a[column][nested] < b[column][nested] ? 1 : -1
+				);
+			}
+
+			setLocalStorage(globalUsersData);
 
 			renderTable(globalUsersData);
 
@@ -186,7 +226,12 @@ function sortTable() {
 // ! Add Column with Action Buttons
 
 function removeUser(userToRemoveId) {
-	globalUsersData = globalUsersData.filter(userData => userData.id != userToRemoveId);
+	globalUsersData = globalUsersData.filter(
+		(userData) => userData.id != userToRemoveId
+	);
+
+	setLocalStorage(globalUsersData);
+
 	renderTable(globalUsersData);
 
 	console.log('userToRemoveId ' + userToRemoveId + ': has been removed');
@@ -194,7 +239,12 @@ function removeUser(userToRemoveId) {
 }
 
 function editUserData(userToEditId) {
-	globalUsersData.find(userData => userData.id === userToEditId).isAditable = true;
+	globalUsersData.find(
+		(userData) => userData.id === userToEditId
+	).isAditable = true;
+
+	setLocalStorage(globalUsersData);
+
 	renderTable(globalUsersData);
 
 	console.log('userToEditId ' + userToEditId + ': selected to edit');
@@ -224,19 +274,28 @@ function saveEditedData(editedUserDataId) {
 			bs: '',
 		},
 		isAditable: false,
-	}
+	};
 
-	let editedUserIndex = globalUsersData.findIndex(userData => userData.id == editedUserDataId);
+	let editedUserIndex = globalUsersData.findIndex(
+		(userData) => userData.id == editedUserDataId
+	);
 
 	globalUsersData.splice(editedUserIndex, 1, editedUser);
 	cancelEditing(editedUserDataId);
+
+	setLocalStorage(globalUsersData);
 
 	console.log('editedUserDataId ' + editedUserDataId + ' : was changed');
 	console.log(globalUsersData);
 }
 
 function cancelEditing(userToEditId) {
-	globalUsersData.find(userData => userData.id == userToEditId).isAditable = false;
+	globalUsersData.find(
+		(userData) => userData.id == userToEditId
+	).isAditable = false;
+
+	setLocalStorage(globalUsersData);
+
 	renderTable(globalUsersData);
 
 	console.log('userToEditId ' + userToEditId + ': editing was canceled');
@@ -247,22 +306,39 @@ function cancelEditing(userToEditId) {
 function showFullDataModal(selectedUserId) {
 	document.querySelector('.showFullUserData').style.display = 'block';
 
-	let selectedUserIndex = globalUsersData.findIndex(userData => userData.id == selectedUserId);
+	let selectedUserIndex = globalUsersData.findIndex(
+		(userData) => userData.id == selectedUserId
+	);
 
-	document.querySelector('.userName').innerHTML = globalUsersData[selectedUserIndex].username;
-	document.querySelector('.name').innerHTML = globalUsersData[selectedUserIndex].name;
-	document.querySelector('.id').innerHTML = '<b>Id: </b>' + globalUsersData[selectedUserIndex].id;
-	document.querySelector('.phone').innerHTML = '<b>Phone: </b>' + globalUsersData[selectedUserIndex].phone;
-	document.querySelector('.website').innerHTML = '<b>Website: </b>' + globalUsersData[selectedUserIndex].website;
-	document.querySelector('.city').innerHTML = '<b>City: </b>' + globalUsersData[selectedUserIndex].address.city;
-	document.querySelector('.geo-lat').innerHTML = '<b>lat: </b>' + globalUsersData[selectedUserIndex].address.geo.lat;
-	document.querySelector('.geo-lng').innerHTML = '<b>lng: </b>' + globalUsersData[selectedUserIndex].address.geo.lng;
-	document.querySelector('.street').innerHTML = '<b>Street: </b>' + globalUsersData[selectedUserIndex].address.street;
-	document.querySelector('.suite').innerHTML = '<b>Suite: </b>' + globalUsersData[selectedUserIndex].address.suite;
-	document.querySelector('.zipcode').innerHTML = '<b>Zipcode: </b>' + globalUsersData[selectedUserIndex].address.zipcode;
-	document.querySelector('.companyName').innerHTML = '<b>name: </b>' + globalUsersData[selectedUserIndex].company.name;
-	document.querySelector('.catchPhrase').innerHTML = '<b>catch phrase: </b>' + globalUsersData[selectedUserIndex].company.catchPhrase;
-	document.querySelector('.bs').innerHTML = '<b>bs: </b>' + globalUsersData[selectedUserIndex].company.bs;
+	document.querySelector('.userName').innerHTML =
+		globalUsersData[selectedUserIndex].username;
+	document.querySelector('.name').innerHTML =
+		globalUsersData[selectedUserIndex].name;
+	document.querySelector('.id').innerHTML =
+		'<b>Id: </b>' + globalUsersData[selectedUserIndex].id;
+	document.querySelector('.phone').innerHTML =
+		'<b>Phone: </b>' + globalUsersData[selectedUserIndex].phone;
+	document.querySelector('.website').innerHTML =
+		'<b>Website: </b>' + globalUsersData[selectedUserIndex].website;
+	document.querySelector('.city').innerHTML =
+		'<b>City: </b>' + globalUsersData[selectedUserIndex].address.city;
+	document.querySelector('.geo-lat').innerHTML =
+		'<b>lat: </b>' + globalUsersData[selectedUserIndex].address.geo.lat;
+	document.querySelector('.geo-lng').innerHTML =
+		'<b>lng: </b>' + globalUsersData[selectedUserIndex].address.geo.lng;
+	document.querySelector('.street').innerHTML =
+		'<b>Street: </b>' + globalUsersData[selectedUserIndex].address.street;
+	document.querySelector('.suite').innerHTML =
+		'<b>Suite: </b>' + globalUsersData[selectedUserIndex].address.suite;
+	document.querySelector('.zipcode').innerHTML =
+		'<b>Zipcode: </b>' + globalUsersData[selectedUserIndex].address.zipcode;
+	document.querySelector('.companyName').innerHTML =
+		'<b>name: </b>' + globalUsersData[selectedUserIndex].company.name;
+	document.querySelector('.catchPhrase').innerHTML =
+		'<b>catch phrase: </b>' +
+		globalUsersData[selectedUserIndex].company.catchPhrase;
+	document.querySelector('.bs').innerHTML =
+		'<b>bs: </b>' + globalUsersData[selectedUserIndex].company.bs;
 
 	console.log('fullDataModal index: ' + selectedUserIndex + ' has been shown');
 }
